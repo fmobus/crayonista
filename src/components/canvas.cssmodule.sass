@@ -1,0 +1,31 @@
+svg
+  position: fixed
+  width: 98%
+  height: 96%
+  margin: 1% 1% 1% 1%
+  border: 1px dashed #f00
+  background: white
+
+  rect
+    fill: transparent
+    stroke: gray
+    stroke-width: 1px
+
+  polyline.track
+    fill: transparent
+    stroke: transparentize(lightgray, 0.9)
+    stroke-width: 5px
+
+  polyline.line
+    fill: transparent
+    stroke-width: 1px
+    stroke-linecap: round
+    stroke-linejoin: round
+
+  circle.node
+    fill: #fafafa
+    stroke: transparent
+
+    &:hover
+      stroke: black
+      stroke-width: 1px

@@ -1,15 +1,26 @@
 {
+  "viewport": {
+    "x0": 0,
+    "x1": 1000,
+    "y0": 0,
+    "y1": 1000
+  },
   "nodes": [
     { "id": 1, "x": 10, "y": 20 },
     { "id": 2, "x": 20, "y": 20 },
     { "id": 3, "x": 30, "y": 30 },
     { "id": 4, "x": 50, "y": 30 },
+    { "id": 5, "x": 50, "y": 50 }
   ],
   "tracks": [
-    { "id": 1, "nodes": [ 1, 2, 3, 4 ], "lines": [ 1, 2 ] }
+    { "id": 1, "nodes": [ 1, 2, 3 ], "lines": [ 1, 2, 3 ] },
+    { "id": 2, "nodes": [ 3, 4 ], "lines": [ 1, 0] },
+    { "id": 3, "nodes": [ 3, 5 ], "lines": [ 0, 2, 3 ] }
   ],
   "lines": [
-    { "id": 1, "color": "red", "name": "A" }
-    { "id": 2, "color": "blue", "name": "B" }
+    { "id": 0, "color": "transparent", "name": "null" },
+    { "id": 1, "color": "red", "name": "A" },
+    { "id": 2, "color": "blue", "name": "B" },
+    { "id": 3, "color": "orange", "name": "C" }
   ]
 }

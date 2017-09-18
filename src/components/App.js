@@ -1,11 +1,12 @@
 import React from 'react';
 import './app.css';
 
-class AppComponent extends React.Component {
+import Canvas from './Canvas';
 
+class AppComponent extends React.Component {
   render() {
     return (
-      <div className="index"/>
+      <Canvas />
     );
   }
 }

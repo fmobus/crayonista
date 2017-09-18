@@ -17,10 +17,11 @@ module.exports = function karmaConfig(config) {
       'sinon'
     ],
     client: {
-      mocha: {}
+      captureConsole: true,
+      mocha: { bail: true }
     },
-    singleRun: true,
-    reporters: ['mocha', 'coverage', 'junit'],
+    singleRun: false,
+    reporters: ['progress', 'mocha', 'coverage', 'junit'],
     mochaReporter: {
       output: 'autowatch'
     },

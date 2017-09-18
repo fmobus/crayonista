@@ -1,7 +1,7 @@
 import { createStore } from 'redux';
 import reducers from '../reducers';
 
-import INITIAL_STATE from '../state.json'
+import INITIAL_STATE from '../state.json';
 
 function reduxStore(initialState = INITIAL_STATE) {
   const store = createStore(reducers, initialState,
