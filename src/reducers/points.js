@@ -2,54 +2,49 @@ import {} from '../actions/const';
 
 const initialState = [];
 
+const copy = (input, selectFn, transformFn) => {
+  const identity = x => x;
+  return input.map((entry, idx) => {
+    const isSelected = selectFn(entry, idx);
+    const fn = (isSelected) ? transformFn : identity;
+    return fn(entry, idx);
+  });
+};
+
+function roundish(value, precision) {
+  console.assert(precision >  0, "precision cannot be zero");
+  console.assert(precision <= 1, "precision must be smaller than 1")
+  const factor = 1 / precision;
+  console.assert(factor == Math.round(factor), "precision must be a fractional part of unit");
+  return Math.round(value * factor) / factor;
+}
+
 function reducer(state = initialState, action) {
   switch (action.type) {
     case 'POINT_SELECTED': {
-      const selectedIndex = state.findIndex(e => e.id === action.id);
-      if (selectedIndex < 0) { return state; }
-      const newPoint = { ...state[selectedIndex], selected: true };
-      return [
-        ...state.slice(0, selectedIndex),
-        newPoint,
-        ...state.slice(selectedIndex + 1, state.length)
-      ];
+      const transform = point => ({ ...point, selected: true });
+      return copy(state, e => e.id === action.id, transform);
     }
     case 'POINT_DESELECTED': {
-      const selectedIndex = state.findIndex(e => e.selected);
-      if (selectedIndex < 0) { return state; }
-      const newPoint = { ...state[selectedIndex], selected: false };
-      return [
-        ...state.slice(0, selectedIndex),
-        newPoint,
-        ...state.slice(selectedIndex + 1, state.length)
-      ];
+      const transform = point => ({ ...point, selected: false });
+      return copy(state, e => e.selected, transform);
     }
     case 'POINT_MOVED': {
-      const selectedIndex = state.findIndex(e => e.id === action.id);
-      if (selectedIndex < 0) { return state; }
-      const point = state[selectedIndex];
-      const nx = point.x + Math.round(action.dx);
-      const ny = point.y + Math.round(action.dy);
-      const x = (action.snap) ? Math.round(nx) : nx;
-      const y = (action.snap) ? Math.round(ny) : ny;
-      const newPoint = { ...point, x, y };
-      return [
-        ...state.slice(0, selectedIndex),
-        newPoint,
-        ...state.slice(selectedIndex + 1, state.length)
-      ];
+      const transform = (point) => {
+        const nx = point.x + roundish(action.dx, 0.5);
+        const ny = point.y + roundish(action.dy, 0.5);
+        const x = (action.snap) ? roundish(nx, 1) : nx;
+        const y = (action.snap) ? roundish(ny, 1) : ny;
+        return { ...point, x, y };
+      };
+      return copy(state, e => e.id === action.id, transform);
     }
     case 'POINT_REMOVE_BIND': {
-      const selectedIndex = state.findIndex(e => e.id === action.id);
-      if (selectedIndex < 0) { return state; }
-      const point = state[selectedIndex];
-      const others = point.bound.filter(p => p !== action.target);
-      const newPoint = { ...point, bound: others };
-      return [
-        ...state.slice(0, selectedIndex),
-        newPoint,
-        ...state.slice(selectedIndex + 1, state.length)
-      ];
+      const transform = (point) => {
+        const others = point.bound.filter(p => p !== action.target);
+        return { ...point, bound: others };
+      };
+      return copy(state, e => e.id === action.id, transform);
     }
     default: {
       return state;

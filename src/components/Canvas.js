@@ -46,7 +46,7 @@ class Canvas extends React.Component {
       const dy = np.y - selected.y;
       this.props.onMovePoint(selected.id, dx, dy, ev.ctrlKey);
       if (!ev.shiftKey) {
-        selected.bound.map(p => this.props.onMovePoint(p, dx, dy));
+        selected.bound.map(p => this.props.onMovePoint(p, dx, dy, ev.ctrlKey));
       }
     };
     const handleMouseUp = () => {
