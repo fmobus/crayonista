@@ -28,9 +28,23 @@ function reducer(state = initialState, action) {
       const selectedIndex = state.findIndex(e => e.id === action.id);
       if (selectedIndex < 0) { return state; }
       const point = state[selectedIndex];
-      const x = point.x + Math.round(action.dx);
-      const y = point.y + Math.round(action.dy);
+      const nx = point.x + Math.round(action.dx);
+      const ny = point.y + Math.round(action.dy);
+      const x = (action.snap) ? Math.round(nx) : nx;
+      const y = (action.snap) ? Math.round(ny) : ny;
       const newPoint = { ...point, x, y };
+      return [
+        ...state.slice(0, selectedIndex),
+        newPoint,
+        ...state.slice(selectedIndex + 1, state.length)
+      ];
+    }
+    case 'POINT_REMOVE_BIND': {
+      const selectedIndex = state.findIndex(e => e.id === action.id);
+      if (selectedIndex < 0) { return state; }
+      const point = state[selectedIndex];
+      const others = point.bound.filter(p => p !== action.target);
+      const newPoint = { ...point, bound: others };
       return [
         ...state.slice(0, selectedIndex),
         newPoint,

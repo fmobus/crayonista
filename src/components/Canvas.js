@@ -30,6 +30,7 @@ class Canvas extends React.Component {
       {...point} targets={bindingTargets} key={point.id}
       onSelect={this.props.onSelectPoint}
       onDeselect={this.props.onDeselectPoint}
+      onRemoveBind={this.props.onRemoveBind}
     />);
   }
   render() {
@@ -43,7 +44,7 @@ class Canvas extends React.Component {
       const np = pt.matrixTransform(this.svg.getScreenCTM().inverse());
       const dx = np.x - selected.x;
       const dy = np.y - selected.y;
-      this.props.onMovePoint(selected.id, dx, dy);
+      this.props.onMovePoint(selected.id, dx, dy, ev.ctrlKey);
       if (!ev.shiftKey) {
         selected.bound.map(p => this.props.onMovePoint(p, dx, dy));
       }
@@ -79,6 +80,7 @@ Canvas.propTypes = {
   onSelectPoint: PropTypes.func.isRequired,
   onDeselectPoint: PropTypes.func.isRequired,
   onMovePoint: PropTypes.func.isRequired,
+  onRemoveBind: PropTypes.func.isRequired,
 };
 Canvas.defaultProps = {};
 
@@ -96,9 +98,14 @@ const mapDispatchToprops = dispatch => ({
   onDeselectPoint: () => {
     dispatch({ type: 'POINT_DESELECTED' });
   },
-  onMovePoint: (id, dx, dy) => {
-    dispatch({ type: 'POINT_MOVED', id, dx, dy });
-  }
+  onMovePoint: (id, dx, dy, snap = false) => {
+    dispatch({ type: 'POINT_MOVED', id, dx, dy, snap });
+  },
+  onRemoveBind: (id, target) => {
+    console.log(id, target);
+    dispatch({ type: 'POINT_REMOVE_BIND', id, target });
+    dispatch({ type: 'POINT_REMOVE_BIND', id: target, target: id });
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToprops)(cssmodules(Canvas, styles));

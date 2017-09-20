@@ -13,9 +13,14 @@ class Point extends React.Component {
   renderBinding(target) {
     const { x: x1, y: y1, id: id1 } = this.props;
     const { x: x2, y: y2, id: id2 } = target;
+    const handleRemoveBind = () => this.props.onRemoveBind(id1, id2);
     const key = `binding-${id1}-${id2}`;
     if (id1 > id2) { return null; }
-    return <line className={styles.binding} key={key} x1={x1} y1={y1} x2={x2} y2={y2} />;
+    return (<line
+      className={styles.binding} key={key}
+      x1={x1} y1={y1} x2={x2} y2={y2}
+      onClick={handleRemoveBind}
+    />);
   }
   render() {
     const { x, y, id } = this.props;
@@ -41,6 +46,7 @@ Point.propTypes = {
   id: PropTypes.number.isRequired,
   onSelect: PropTypes.func.isRequired,
   onDeselect: PropTypes.func.isRequired,
+  onRemoveBind: PropTypes.func.isRequired,
 };
 
 Point.defaultProps = {
