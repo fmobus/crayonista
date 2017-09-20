@@ -9,13 +9,18 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import '../actions/';
-
 import Main from '../components/App';
 /* Populated by react-webpack-redux:reducer */
 class App extends Component {
   render() {
-    const {actions, viewport} = this.props;
-    return <Main actions={actions} viewport={viewport}/>;
+    const {actions, viewport, points, lines} = this.props;
+    return (
+      <Main
+        actions={actions}
+        viewport={viewport}
+        points={points}
+        lines={lines}/>
+    );
   }
 }
 /* Populated by react-webpack-redux:reducer
@@ -25,12 +30,18 @@ class App extends Component {
  */
 App.propTypes = {
   actions: PropTypes.shape({}),
-  viewport: PropTypes.shape({})
+  viewport: PropTypes.shape({}),
+  // points: PropTypes.shape([]),
+  // lines: PropTypes.shape([])
 };
 function mapStateToProps(state) {
   // eslint-disable-line no-unused-vars
   /* Populated by react-webpack-redux:reducer */
-  const props = { viewport: state.viewport };
+  const props = {
+    viewport: state.viewport,
+    points: state.points,
+    lines: state.lines
+  };
   return props;
 }
 function mapDispatchToProps(dispatch) {

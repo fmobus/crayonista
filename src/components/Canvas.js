@@ -4,48 +4,68 @@ import { connect } from 'react-redux';
 
 import cssmodules from 'react-css-modules';
 import styles from './canvas.cssmodule.sass';
-
-import Node from './Node';
-import Track from './Track';
-// import Line from './Line';
-
-// const flatten = list => list.reduce((acc, curr) => acc.concat(curr), []);
+import shapes from './shapes';
+import Point from './Point';
+import Line from './Line';
+import Viewport from './Viewport';
 
 class Canvas extends React.Component {
   constructor() {
     super();
-    this.renderTrack = this.renderTrack.bind(this);
-    this.findNode = this.findNode.bind(this);
-    this.findLine = this.findLine.bind(this);
+    this.findPoint = this.findPoint.bind(this);
+    this.renderLine = this.renderLine.bind(this);
+    this.renderPoint = this.renderPoint.bind(this);
+    this.svg = null;
   }
-  findNode(desiredNodeId) {
-    return this.props.nodes.filter(node => node.id === desiredNodeId)[0];
+  findPoint(desiredPointId) {
+    return this.props.points.filter(node => node.id === desiredPointId)[0];
   }
-  findLine(desiredLineId) {
-    return this.props.lines.filter(line => line.id === desiredLineId)[0];
+  renderLine(line) {
+    const points = line.points.map(this.findPoint);
+    return <Line key={line.id} id={line.id} points={points} color={line.color} />;
   }
-  renderTrack(track) {
-    const points = track.nodes.map(this.findNode);
-    const lineColors = track.lines.map(this.findLine).map(l => l.color);
-    return <Track key={track.id} points={points} stack={lineColors} />;
+  renderPoint(point) {
+    const bindingTargets = point.bound.map(this.findPoint);
+    return (<Point
+      {...point} targets={bindingTargets} key={point.id}
+      onSelect={this.props.onSelectPoint}
+      onDeselect={this.props.onDeselectPoint}
+    />);
   }
-  // renderLine(line) {
-  //   const tracks = this.props.tracks.filter(track => track.lines.includes(line.id));
-  //   const allNodes = flatten(tracks.map(track => track.nodes));
-  //   const points = allNodes.map(this.findNode);
-  //   return <Line key={line.id} points={points} color={line.color} />;
-  // }
   render() {
-    const renderNode = node => <Node {...node} key={node.id} />;
+    const grabRef = (ref) => { this.svg = ref; };
+    const handleMouseMove = (ev) => {
+      const selected = this.props.selectedPoint;
+      if (!selected) { return; }
+      const pt = this.svg.createSVGPoint();
+      pt.x = ev.clientX;
+      pt.y = ev.clientY;
+      const np = pt.matrixTransform(this.svg.getScreenCTM().inverse());
+      const dx = np.x - selected.x;
+      const dy = np.y - selected.y;
+      this.props.onMovePoint(selected.id, dx, dy);
+      if (!ev.shiftKey) {
+        selected.bound.map(p => this.props.onMovePoint(p, dx, dy));
+      }
+    };
+    const handleMouseUp = () => {
+      this.props.onDeselectPoint();
+    };
+
     return (
       <svg
-        viewBox="-50 -50 200 200"
+        viewBox="0 0 200 300"
         xmlns="http://www.w3.org/2000/svg"
         xmlnsXlink="http://www.w3.org/1999/xlink"
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        ref={grabRef}
       >
-        <rect x="0" y="0" width="1000" height="1000"/>
-        {this.props.nodes.map(renderNode)}
-        {this.props.tracks.map(this.renderTrack)}
+        <Viewport />
+        {this.props.lines.map(this.renderLine)}
+        <g id="points">
+          {this.props.points.map(this.renderPoint)}
+        </g>
       </svg>
     );
   }
@@ -53,16 +73,32 @@ class Canvas extends React.Component {
 
 Canvas.displayName = 'Canvas';
 Canvas.propTypes = {
-  nodes: PropTypes.arrayOf(PropTypes.object).isRequired,
-  tracks: PropTypes.arrayOf(PropTypes.object).isRequired,
-  lines: PropTypes.arrayOf(PropTypes.object).isRequired
+  points: PropTypes.arrayOf(PropTypes.object).isRequired,
+  lines: PropTypes.arrayOf(PropTypes.object).isRequired,
+  selectedPoint: PropTypes.shape(shapes.point),
+  onSelectPoint: PropTypes.func.isRequired,
+  onDeselectPoint: PropTypes.func.isRequired,
+  onMovePoint: PropTypes.func.isRequired,
 };
 Canvas.defaultProps = {};
 
 const mapStateToProps = state => ({
-  nodes: state.nodes,
-  tracks: state.tracks,
+  points: state.points,
   lines: state.lines,
+  selectedPoint: state.points.find(p => p.selected),
 });
 
-export default connect(mapStateToProps)(cssmodules(Canvas, styles));
+const mapDispatchToprops = dispatch => ({
+  onSelectPoint: (id) => {
+    dispatch({ type: 'POINT_SELECTED', id });
+
+  },
+  onDeselectPoint: () => {
+    dispatch({ type: 'POINT_DESELECTED' });
+  },
+  onMovePoint: (id, dx, dy) => {
+    dispatch({ type: 'POINT_MOVED', id, dx, dy });
+  }
+});
+
+export default connect(mapStateToProps, mapDispatchToprops)(cssmodules(Canvas, styles));

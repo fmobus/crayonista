@@ -1,7 +1,6 @@
 svg
   position: fixed
-  width: 98%
-  height: 96%
+  width: 95%
   margin: 1% 1% 1% 1%
   border: 1px dashed #f00
   background: white
@@ -11,21 +10,37 @@ svg
     stroke: gray
     stroke-width: 1px
 
-  polyline.track
-    fill: transparent
-    stroke: transparentize(lightgray, 0.9)
-    stroke-width: 5px
+  g.grid
+    line
+      fill: transparent
+      stroke: lightgray
+      stroke-width: 0.1px
 
   polyline.line
     fill: transparent
-    stroke-width: 1px
+    stroke-width: 0.9px
     stroke-linecap: round
     stroke-linejoin: round
 
-  circle.node
-    fill: #fafafa
-    stroke: transparent
+  line.binding
+    stroke: lightgray
+    stroke-width: 0.1px
+    stroke-dasharray: 0.1px
+
+  circle.point
+    fill: transparent
+    stroke-width: 0.05px
 
     &:hover
+      fill: red
       stroke: black
-      stroke-width: 1px
+
+    &.selected, &:hover.selected
+      fill: yellow
+      stroke: red
+
+
+  circle.influence
+    fill: transparent
+    stroke: lightgray
+    stroke-width: 0.1px

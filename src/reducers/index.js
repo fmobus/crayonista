@@ -9,7 +9,13 @@
  */
 /* Populated by react-webpack-redux:reducer */
 import { combineReducers } from 'redux';
+import lines from '../reducers/lines.js';
+import points from '../reducers/points.js';
 import viewport from '../reducers/viewport.js';
-const reducers = { viewport };
+const reducers = {
+  viewport,
+  points,
+  lines
+};
 const combined = combineReducers(reducers);
 module.exports = combined;
