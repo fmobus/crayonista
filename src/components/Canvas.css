@@ -1,0 +1,7 @@
+svg {
+  position: fixed;
+  width: 95%;
+  margin: 1% 1% 1% 1%;
+  border: 1px dashed #f00;
+  background: white;
+}

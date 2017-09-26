@@ -1,0 +1,16 @@
+g.line polyline.outer {
+  fill: transparent;
+  stroke-width: 0.9px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+g.line polyline.inner {
+  fill: transparent;
+  stroke: black;
+  stroke-width: 0.2px;
+}
+line.binding {
+  stroke: lightgray;
+  stroke-width: 1px;
+  stroke-dasharray: 0.1px;
+}

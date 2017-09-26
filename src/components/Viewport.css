@@ -1,0 +1,11 @@
+.viewport rect {
+  fill: transparent;
+  stroke: gray;
+  stroke-width: 1p;
+}
+
+.viewport .grid line {
+  fill: transparent;
+  stroke: lightgray;
+  stroke-width: 0.1px;
+}

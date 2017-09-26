@@ -1,0 +1,18 @@
+circle.point {
+  fill: transparent;
+  stroke-width: 0.05px;
+}
+circle.point:hover {
+  fill: red;
+  stroke: black;
+}
+circle.point.selected:hover {
+  fill: yellow;
+  stroke: red;
+}
+
+circle.influence {
+  fill: transparent;
+  stroke: lightgray;
+  stroke-width: 0.1px;
+}
