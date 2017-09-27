@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 
 import './Viewport.css'
 
-const styles = {};
 const from = min => ({
   upto(max) {
     return Array.from(Array(max - min)).map((_, i) => i + min);

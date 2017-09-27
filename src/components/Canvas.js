@@ -71,6 +71,12 @@ class Canvas extends React.Component {
         onMouseUp={handleMouseUp}
         ref={grabRef}
       >
+        <defs>
+          <filter x="0" y="0" width="1" height="1" id="solid">
+            <feFlood floodColor="yellow" />
+            <feComposite in="SourceGraphic" />
+          </filter>
+        </defs>
         <Viewport />
         {this.props.lines.map(this.renderLine)}
         <g id="points">

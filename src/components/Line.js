@@ -3,6 +3,9 @@ import PropTypes from 'prop-types'
 
 import './Line.css'
 import shapes from './shapes'
+import { angles } from '../libs/angles'
+
+import Angle from './Angle'
 
 const commaize = ({ x, y }) => `${x},${y}`
 
@@ -15,7 +18,9 @@ class Line extends React.Component {
     this.renderAngles = this.renderAngles.bind(this)
   }
   renderAngles() {
-    console.log(this.points)
+    const allAngles = angles(...this.props.points)
+    const renderAngle = (point, i) => <Angle key={i} point={point} angle={allAngles[i]} />
+    return this.props.points.map(renderAngle)
   }
   renderInnerLine() {
     return <polyline className="inner" points={this.points} />
@@ -28,7 +33,7 @@ class Line extends React.Component {
     return (<g id={lineId} className="line">
       <polyline className="outer" points={this.points} stroke={this.props.color} />
       {selected && this.renderInnerLine()}
-      {this.renderAngles()}
+      {selected && this.renderAngles()}
     </g>)
   }
 }

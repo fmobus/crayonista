@@ -25,7 +25,7 @@ class Point extends React.Component {
   render() {
     const { x, y, id } = this.props
     const selected = this.props.selected
-    const handleMouseDown = ev => this.props.onSelect(id)
+    const handleMouseDown = ev => { this.props.onSelect(id); ev.stopPropagation() }
     const handleMouseUp = ev => this.props.onDeselect()
     const key = `point-${id}`
     const classes = classnames("point", { "selected": selected })
